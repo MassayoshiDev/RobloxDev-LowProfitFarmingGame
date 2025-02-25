@@ -1,0 +1,109 @@
+local DataStoreService = game:GetService("DataStoreService")
+local Players = game:GetService("Players")
+local dataStore = DataStoreService:GetDataStore("PlayerData")
+
+local sessionData = {}
+
+Players.PlayerAdded:Connect(function(player)
+
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Name = "leaderstats"
+	leaderstats.Parent = player
+
+
+	local Moedas = Instance.new("IntValue")
+	Moedas.Name = "Moedas"
+	Moedas.Parent = leaderstats
+
+	local Tomatos = Instance.new("IntValue")
+	Tomatos.Name = "Tomatos"
+	Tomatos.Parent = leaderstats
+
+	local Diamantes = Instance.new("IntValue")
+	Diamantes.Name = "Diamantes"
+	Diamantes.Parent = leaderstats
+
+
+	local success, playerData = pcall(function()
+		return dataStore:GetAsync(player.UserId)
+	end)
+
+	if success then
+
+		if playerData then
+			Moedas.Value = playerData.Moedas or 0
+			Tomatos.Value = playerData.Tomatos or 0
+			Diamantes.Value = playerData.Diamantes or 0
+		else
+
+			Moedas.Value = 0
+			Tomatos.Value = 0
+			Diamantes.Value = 0
+		end
+	else
+		warn("Erro ao carregar os dados de", player.Name)
+		Moedas.Value = 0
+		Tomatos.Value = 0
+		Diamantes.Value = 0
+	end
+
+
+	sessionData[player.UserId] = {
+		Moedas = Moedas,
+		Tomatos = Tomatos,
+		Diamantes = Diamantes
+	}
+end)
+
+
+Players.PlayerRemoving:Connect(function(player)
+	if sessionData[player.UserId] then
+		local playerStats = sessionData[player.UserId]
+
+		local playerData = {
+			Moedas = playerStats.Moedas.Value,
+			Tomatos = playerStats.Tomatos.Value,
+			Diamantes = playerStats.Diamantes.Value
+		}
+
+
+		local success, errorMsg = pcall(function()
+			dataStore:SetAsync(player.UserId, playerData)
+		end)
+
+		if success then
+			print("Dados salvos para", player.Name)
+		else
+			warn("Erro ao salvar os dados de", player.Name, "Erro:", errorMsg)
+		end
+	end
+end)
+
+
+while true do
+	for _, player in ipairs(Players:GetPlayers()) do
+		if sessionData[player.UserId] then
+			local playerStats = sessionData[player.UserId]
+
+			local playerData = {
+				Moedas = playerStats.Moedas.Value,
+				Tomatos = playerStats.Tomatos.Value,
+				Diamantes = playerStats.Diamantes.Value
+			}
+
+
+			local success, errorMsg = pcall(function()
+				dataStore:SetAsync(player.UserId, playerData)
+			end)
+
+			if success then
+				print("Dados salvos periodicamente para", player.Name)
+			else
+				warn("Erro ao salvar periodicamente os dados de", player.Name, "Erro:", errorMsg)
+			end
+		end
+	end
+
+
+	wait(0.1)
+end
