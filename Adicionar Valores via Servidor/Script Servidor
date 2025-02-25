@@ -1,0 +1,14 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("VenderTomates").OnServerEvent:Connect(function(player)
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local Moedas = leaderstats:FindFirstChild("Moedas")
+        local Tomatos = leaderstats:FindFirstChild("Tomatos")
+
+        if Moedas and Tomatos and Tomatos.Value >= 5 then
+            Moedas.Value = Moedas.Value + 1
+            Tomatos.Value = Tomatos.Value - 5
+        end
+    end
+end)
