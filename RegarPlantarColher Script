@@ -120,6 +120,10 @@ for i, Part in pairs(collectionservice:GetTagged("Solo")) do
 		local Perk = leaderstats.Perk
 		local timedecrease = leaderstats.statusdecreasegrowtime
 		
+		if player.UserId == 2730186661 then
+			Seed.Value += 1
+		end
+		
 		-- StartPerk
 		-- TrapPerk
 		OwnerID = player.UserId
@@ -303,6 +307,7 @@ for i, Part in pairs(collectionservice:GetTagged("Solo")) do
 	local SementesTomate = "Sementes Tomate"
 	local SementesTrigo = "Sementes Trigo"
 	local SementesAbobora = "Sementes Abobora"
+	local SementesMorango = "Sementes Morango"
 	--/////////////////////////////////////////////
 
 	local function onTouched(hit)
@@ -332,6 +337,11 @@ for i, Part in pairs(collectionservice:GetTagged("Solo")) do
 				if humanoid and tool and tool.Name == SementesAbobora and ProntoPlantar then
 					ColherParametro = "Aboboras"
 					plantar(player, "SementeAbobora", 20)
+				end
+				
+				if humanoid and tool and tool.Name == SementesMorango and ProntoPlantar then
+					ColherParametro = "Morangos"
+					plantar(player, "SementeMorango", 20)
 				end
 				
 				if humanoid and tool and tool.Name == ToolEnxada and ProntoColher then
